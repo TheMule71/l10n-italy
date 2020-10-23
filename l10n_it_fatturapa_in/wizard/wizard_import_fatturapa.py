@@ -1470,7 +1470,10 @@ class WizardImportFatturapa(models.TransientModel):
         # il codice seguente rimpiazza fatturapa.CreateFromDocument(xml_string)
         class ObjectDict(object):
             def __getattr__(self, attr):
-                return getattr(self.__dict__, attr)
+                try:
+                    return getattr(self.__dict__, attr)
+                except AttributeError:
+                    return None
             def __getitem__(self, *attr, **kwattr):
                 return self.__dict__.__getitem__(*attr, **kwattr)
             def __setitem__(self, *attr, **kwattr):
