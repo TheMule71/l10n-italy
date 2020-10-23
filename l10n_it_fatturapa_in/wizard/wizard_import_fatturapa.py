@@ -1100,9 +1100,13 @@ class WizardImportFatturapa(models.TransientModel):
         rounding = 0.0
         if FatturaBody.DatiBeniServizi.DatiRiepilogo:
             for summary in FatturaBody.DatiBeniServizi.DatiRiepilogo:
+                if not hasattr(summary, 'Arrotondamento'):
+                    summary.Arrotondamento = None
                 rounding += float(summary.Arrotondamento or 0.0)
         if FatturaBody.DatiGenerali.DatiGeneraliDocumento:
             summary = FatturaBody.DatiGenerali.DatiGeneraliDocumento
+            if not hasattr(summary, 'Arrotondamento'):
+                summary.Arrotondamento = None
             rounding += float(summary.Arrotondamento or 0.0)
 
         if rounding:
@@ -1128,6 +1132,8 @@ class WizardImportFatturapa(models.TransientModel):
             line_sequence = max(invoice.invoice_line_ids.mapped('sequence'))
             line_vals = []
             for summary in FatturaBody.DatiBeniServizi.DatiRiepilogo:
+                if not hasattr(summary, 'Arrotondamento'):
+                    summary.Arrotondamento = None
                 to_round = float(summary.Arrotondamento or 0.0)
                 if to_round != 0.0:
                     account_taxes = self.get_account_taxes(
@@ -1152,6 +1158,8 @@ class WizardImportFatturapa(models.TransientModel):
                 self.env['account.invoice.line'].create(line_vals)
 
     def set_efatt_rounding(self, FatturaBody, invoice_data):
+        if not hasattr(FatturaBody.DatiGenerali.DatiGeneraliDocumento, 'Arrotondamento'):
+            FatturaBody.DatiGenerali.DatiGeneraliDocumento.Arrotondamento = None
         if FatturaBody.DatiGenerali.DatiGeneraliDocumento.Arrotondamento:
             invoice_data['efatt_rounding'] = float(
                 FatturaBody.DatiGenerali.DatiGeneraliDocumento.Arrotondamento
@@ -1377,6 +1385,8 @@ class WizardImportFatturapa(models.TransientModel):
         summary_data_model = self.env['faturapa.summary.data']
         if Summary_datas:
             for summary in Summary_datas:
+                if not hasattr(summary, 'Arrotondamento'):
+                    summary.Arrotondamento = None
                 summary_line = {
                     'tax_rate': summary.AliquotaIVA or 0.0,
                     'non_taxable_nature': summary.Natura or False,
