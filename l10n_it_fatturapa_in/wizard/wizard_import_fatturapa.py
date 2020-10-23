@@ -76,6 +76,11 @@ class WizardImportFatturapa(models.TransientModel):
         )
 
     def check_partner_base_data(self, partner_id, DatiAnagrafici):
+        if not hasattr(DatiAnagrafici.Anagrafica, "Nome"):
+            DatiAnagrafici.Anagrafica.Nome = None
+        if not hasattr(DatiAnagrafici.Anagrafica, "Cognome"):
+            DatiAnagrafici.Anagrafica.Cognome = None
+
         partner = self.env['res.partner'].browse(partner_id)
         if (
             DatiAnagrafici.Anagrafica.Denominazione and
@@ -196,6 +201,19 @@ class WizardImportFatturapa(models.TransientModel):
             return partner_model.create(vals).id
 
     def getCedPrest(self, cedPrest):
+        if not hasattr(cedPrest.DatiAnagrafici, 'AlboProfessionale'):
+            cedPrest.DatiAnagrafici.AlboProfessionale = None
+        if not hasattr(cedPrest.DatiAnagrafici, 'ProvinciaAlbo'):
+            cedPrest.DatiAnagrafici.ProvinciaAlbo = None
+        if not hasattr(cedPrest.DatiAnagrafici, 'NumeroIscrizioneAlbo'):
+            cedPrest.DatiAnagrafici.NumeroIscrizioneAlbo = None
+        if not hasattr(cedPrest.DatiAnagrafici, 'DataIscrizioneAlbo'):
+            cedPrest.DatiAnagrafici.DataIscrizioneAlbo = None
+        if not hasattr(cedPrest.IscrizioneREA, 'SocioUnico'):
+            cedPrest.IscrizioneREA.SocioUnico = None
+        if not hasattr(cedPrest, 'Contatti'):
+            cedPrest.Contatti = None
+
         partner_model = self.env['res.partner']
         partner_id = self.getPartnerBase(cedPrest.DatiAnagrafici)
         no_contact_update = False
@@ -1448,7 +1466,7 @@ class WizardImportFatturapa(models.TransientModel):
                 return self.__dict__.__setitem__(*attr, **kwattr)
 
         validator = xmlschema.XMLSchema(fatturapa._xsd_schema)
-        return validator.to_dict(xml_string, dict_class=ObjectDict)
+        return validator.to_dict(xml_string.decode(), dict_class=ObjectDict)
 
     @api.multi
     def importFatturaPA(self):
