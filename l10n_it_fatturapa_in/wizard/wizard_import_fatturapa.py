@@ -1,5 +1,6 @@
 
 import logging
+import xmlschema
 from odoo import models, api, fields
 from odoo.tools import float_is_zero
 from odoo.tools.translate import _
@@ -1436,7 +1437,18 @@ class WizardImportFatturapa(models.TransientModel):
 
     def get_invoice_obj(self, fatturapa_attachment):
         xml_string = fatturapa_attachment.get_xml_string()
-        return fatturapa.CreateFromDocument(xml_string)
+
+        # il codice seguente rimpiazza fatturapa.CreateFromDocument(xml_string)
+        class ObjectDict(object):
+            def __getattr__(self, attr):
+                return getattr(self.__dict__, attr)
+            def __getitem__(self, *attr, **kwattr):
+                return self.__dict__.__getitem__(*attr, **kwattr)
+            def __setitem__(self, *attr, **kwattr):
+                return self.__dict__.__setitem__(*attr, **kwattr)
+
+        validator = xmlschema.XMLSchema(fatturapa._xsd_schema)
+        return validator.to_dict(xml_string, dict_class=ObjectDict)
 
     @api.multi
     def importFatturaPA(self):
