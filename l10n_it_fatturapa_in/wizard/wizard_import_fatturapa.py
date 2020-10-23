@@ -1,6 +1,7 @@
 
 import logging
 import xmlschema
+from datetime import datetime
 from odoo import models, api, fields
 from odoo.tools import float_is_zero
 from odoo.tools.translate import _
@@ -912,7 +913,7 @@ class WizardImportFatturapa(models.TransientModel):
                 e_invoice_received_date.date()
         else:
             e_invoice_received_date = fatturapa_attachment.create_date.date()
-        e_invoice_date = FatturaBody.DatiGenerali.DatiGeneraliDocumento.Data.date()
+        e_invoice_date = datetime.strptime(FatturaBody.DatiGenerali.DatiGeneraliDocumento.Data, '%Y-%m-%d').date()
 
         invoice_data = {
             'e_invoice_received_date': e_invoice_received_date,
@@ -1023,7 +1024,7 @@ class WizardImportFatturapa(models.TransientModel):
         if not invoice.date_invoice:
             invoice.update({
                 'date_invoice':
-                    FatturaBody.DatiGenerali.DatiGeneraliDocumento.Data.date(),
+                    datetime.strptime(FatturaBody.DatiGenerali.DatiGeneraliDocumento.Data, '%Y-%m-%d').date(),
             })
         if not invoice.reference:
             invoice.update({
