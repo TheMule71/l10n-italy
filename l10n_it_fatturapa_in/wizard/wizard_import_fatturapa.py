@@ -1488,11 +1488,17 @@ class WizardImportFatturapa(models.TransientModel):
             # 1.2
             partner_id = self.getCedPrest(cedentePrestatore)
             # 1.3
-            TaxRappresentative = fatt.FatturaElettronicaHeader.\
-                RappresentanteFiscale
+            try:
+                TaxRappresentative = fatt.FatturaElettronicaHeader.\
+                    RappresentanteFiscale
+            except AttributeError:
+                TaxRappresentative = None
             # 1.5
-            Intermediary = fatt.FatturaElettronicaHeader.\
-                TerzoIntermediarioOSoggettoEmittente
+            try:
+                Intermediary = fatt.FatturaElettronicaHeader.\
+                    TerzoIntermediarioOSoggettoEmittente
+            except AttributeError:
+                Intermediary = None
 
             generic_inconsistencies = ''
             if self.env.context.get('inconsistencies'):
