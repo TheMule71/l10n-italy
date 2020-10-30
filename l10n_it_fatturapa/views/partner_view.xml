@@ -22,7 +22,7 @@
                                attrs="{'invisible': ['|',('is_pa', '=', True), ('codice_destinatario', '!=', '0000000')]}"/>
                         <field name="eori_code"/>
                     </group>
-	        </group>
+                </group>
             </page>
             </notebook>
         </field>
