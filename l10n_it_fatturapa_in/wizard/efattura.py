@@ -125,7 +125,7 @@ def CreateFromDocument(xml_string):
             return self.__dict__.__setitem__(*attr, **kwattr)
 
     # TODO: crearlo una tantum?
-    validator = xmlschema.XMLSchema(_xsd_schema, validation='lax')
+    validator = xmlschema.XMLSchema(_xsd_schema)
 
     xml_string = _fix_xmlstring(xml_string)
     root = etree.fromstring(xml_string)
@@ -163,8 +163,8 @@ def CreateFromDocument(xml_string):
                     problems.append(msg)
                     _logger.warn(msg)
 
-    validat, errors = validator.to_dict(tree, dict_class=ObjectDict)
-    setattr(validat, '_xmldoctor', problems + errors)
+    validat = validator.to_dict(tree, dict_class=ObjectDict)
+    setattr(validat, '_xmldoctor', problems)
     return validat
 
 
