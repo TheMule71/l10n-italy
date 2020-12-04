@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data>
+        <template id="account_invoice_it_dati_ddt"><t/></template>
         <template id="account_invoice_it_dati_documento_correlato">
             <RiferimentoNumeroLinea t-if="doc.lineRef" t-esc="doc.lineRef" />
             <IdDocumento t-if="doc.name" t-esc="doc.name" />
@@ -471,12 +472,7 @@
                     <!--                    <DatiSAL>-->
                     <!--                        <RiferimentoFase t-esc=""/>-->
                     <!--                    </DatiSAL>-->
-                    <!--                    <DatiDDT t-if="record.l10n_it_ddt_id">-->
-                    <!--                        &lt;!&ndash;2.1.8&ndash;&gt;-->
-                    <!--                        <NumeroDDT t-esc="record.l10n_it_ddt_id.name"/>-->
-                    <!--                        <DataDDT t-esc="format_date(record.l10n_it_ddt_id.date)"/>-->
-                    <!--                        <RiferimentoNumeroLinea t-esc=""/>-->
-                    <!--                    </DatiDDT>-->
+                    <t t-call="l10n_it_fatturapa_out.account_invoice_it_dati_ddt" />
                     <!--                    <DatiTrasporto>-->
                     <!--                        <DatiAnagraficiVettore>-->
                     <!--                            <IdFiscaleIVA>-->
