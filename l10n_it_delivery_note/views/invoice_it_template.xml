@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <template id="account_invoice_it_dati_ddt"
+            inherit_id="l10n_it_fatturapa_out.account_invoice_it_dati_ddt">
+            <xpath expr="t" position="replace">
+<!--
+    Al momento non c'è un riferimento diretto tra una dn e una riga fattura, solo
+    una relazione inversa. Il codice cicla su tutte le righe fattura e raccoglie
+    i riferimenti inversi.
+
+    Se più righe puntano alla stessa dn, viene indicata l'ultima.
+        <t t-set="dn_line_xref" t-value="dict((line.delivery_note_id.id, n) for n, line in enumerate(record.invoice_line_ids, start=1) if line.delivery_note_id)"/>
+               <RiferimentoNumeroLinea t-if="dn.id in dn_line_xref" t-esc="dn_line_xref[dn.id]" />
+
+   Oppure, le elenchiamo tutte, anche se costa ciclare per ogni DDT.
+-->
+                <!--2.1.8-->
+                <DatiDDT t-foreach="record.delivery_note_ids" t-as="dn">
+                    <NumeroDDT t-esc="dn.name[-20:]"/>
+                    <DataDDT t-esc="format_date(dn.date)"/>
+                    <RiferimentoNumeroLinea t-foreach="[n for n, line in enumerate(record.invoice_line_ids, start=1) if line.delivery_note_id and line.delivery_note_id == dn]" t-as="n" t-esc="n"/>
+                </DatiDDT>
+            </xpath>
+        </template>
+
+        <template id="account_invoice_it_dati_trasporto"
+            inherit_id="l10n_it_fatturapa_out.account_invoice_it_dati_trasporto">
+            <xpath expr="t" position="replace">
+<!--
+    Per specifica l'elemento DatiTrasporto è optionale e non ripetibile, per cui si
+    prevede un trasporto per una fattura.  Il controllo andrebbe fatto prima.
+    I dati dovrebbero essere coerenti per tutti i DDT relativi alla fattura, per cui
+    prendiamo il primo, se c'è.
+-->
+                <DatiTrasporto t-if="record.delivery_note_ids">
+                    <t t-set="dn" t-value="record.delivery_note_ids[0]"/>
+                    <DatiAnagraficiVettore t-if="dn.carrier_id">
+                        <IdFiscaleIVA t-if="not in_eu(dn.carrier_id)">
+                            <IdPaese t-esc="dn.carrier_id.country_id.code"/>
+                            <IdCodice t-esc="99999999999"/>
+                        </IdFiscaleIVA>
+                        <IdFiscaleIVA t-if="in_eu(dn.carrier_id) and dn.carrier_id.vat">
+                            <IdPaese t-esc="get_vat_country(dn.carrier_id.vat)"/>
+                            <IdCodice t-esc="get_vat_number(dn.carrier_id.vat)"/>
+                        </IdFiscaleIVA>
+                        <CodiceFiscale t-if="dn.carrier_id.fiscalcode" t-esc="dn.carrier_id.fiscalcode"/>
+                        <Anagrafica>
+                            <Denominazione
+                                t-if="dn.carrier_id.is_company"
+                                t-esc="encode_for_export(dn.carrier_id.display_name, 80)"
+                            />
+                            <Nome
+                                t-if="not dn.carrier_id.is_company"
+                                t-esc="encode_for_export(dn.carrier_id.firstname, 60)"
+                            />
+                            <Cognome
+                                t-if="not dn.carrier_id.is_company"
+                                t-esc="encode_for_export(dn.carrier_id.lastname, 60)"
+                            />
+                                <!-- <Titolo t-esc="encode_for_export(.strip(), 60)"/> -->
+                            <CodEORI t-if="dn.carrier_id.eori_code" t-esc="dn.carrier_id.eori_code" />
+                        </Anagrafica>
+                            <!-- <NumeroLicenzaGuida t-esc="encode_for_export(, 20)"/> -->
+                    </DatiAnagraficiVettore>
+                    <MezzoTrasporto
+                        t-if="dn.transport_method_id"
+                        t-esc="encode_for_export(dn.transport_method_id.name, 80)"
+                    />
+                    <CausaleTrasporto
+                        t-if="dn.transport_reason_id"
+                        t-esc="encode_for_export(dn.transport_reason_id.name, 100)"
+                    />
+                    <NumeroColli t-esc="dn.packages"/>
+                    <Descrizione
+                        t-if="dn.goods_appearance_id"
+                        t-esc="encode_for_export(dn.goods_appearance_id.name, 100)"
+                    />
+<!--
+    Conversione in base a gross_weight_uom_id e net_weight_uom_id.
+    Il formato XML ne prevede una sola.
+-->
+                    <UnitaMisuraPeso t-esc="encode_for_export(dn.gross_weight_uom_id.name, 10)"/>
+                    <PesoLordo t-esc="format_numbers_two(dn.gross_weight)"/>
+                    <PesoNetto t-esc="format_numbers_two(dn.net_weight_uom_id._compute_quantity(dn.net_weight, dn.gross_weight_uom_id))"/>
+<!-- XXX quale va valorizzato in base a dn.transport_datetime? -->
+                    <DataOraRitiro t-esc="dn.transport_datetime.isoformat()"/>
+<!--
+                    <DataInizioTrasporto t-esc="format_date(dn.transport_datetime.date())"/>
+-->
+                    <TipoResa t-if="record.incoterms_id.code" t-esc="record.incoterms_id.code"/>
+<!--
+    XXX da vedere: possiamo prendere l'indirizzo del destinatario
+                    <IndirizzoResa>
+                        <Indirizzo t-esc="encode_for_export(,60)"/>
+                        <CAP t-esc=""/>
+                        <Comune t-esc="encode_for_export(,60)"/>
+                        <Provincia t-esc=""/>
+                        <Nazione t-esc=""/>
+                    </IndirizzoResa>
+                    <DataOraConsegna t-esc=""/>
+-->
+                </DatiTrasporto>
+            </xpath>
+        </template>
+    </data>
+</odoo>

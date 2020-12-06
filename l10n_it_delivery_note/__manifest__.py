@@ -25,7 +25,8 @@
         'l10n_it_delivery_note_base',
         'mail',
         'sale_stock',
-        'stock_account'
+        'stock_account',
+        'l10n_it_fatturapa_out',
     ],
 
     'data': [
@@ -43,6 +44,7 @@
         'views/sale_order.xml',
         'views/stock_delivery_note.xml',
         'views/stock_picking.xml',
+        'views/invoice_it_template.xml',
 
         'wizard/delivery_note_create.xml',
         'wizard/delivery_note_select.xml',

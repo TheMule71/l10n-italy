@@ -1,10 +1,15 @@
+import re
+import base64
 from datetime import datetime, timedelta
 from odoo.tests.common import TransactionCase
+
+from odoo.addons.l10n_it_fatturapa_out.tests.fatturapa_common import (
+    FatturaPACommon)
 
 DOWNPAYMENT_METHODS = ['fixed', 'percentage']
 
 
-class StockDeliveryNoteInvoicingTest(TransactionCase):
+class StockDeliveryNoteInvoicingTest(FatturaPACommon):
     at_install = False
     post_install = True
 
@@ -285,6 +290,47 @@ class StockDeliveryNoteInvoicingTest(TransactionCase):
         self.assertEqual(invoice_line.display_type, 'line_note')
         self.assertEqual(invoice_line.quantity, 0)
         self.assertEqual(invoice_line.delivery_note_id, delivery_note)
+
+        #
+        # Test DDT in e-fattura
+        #
+        delivery_note.date = '2020-12-04'
+        delivery_note.transport_datetime = '2020-12-04 15:16:17.18'
+        delivery_note.goods_apperance_ids = self.env.ref('l10n_it_delivery_note_base.goods_appearance_SFU')
+        delivery_note.transport_reason_ids = self.env.ref('l10n_it_delivery_note_base.transport_reason_VEN')
+        delivery_note.transport_method_ids = self.env.ref('l10n_it_delivery_note_base.transport_method_MIT')
+        delivery_note.gross_weight = 1.0
+        delivery_note.gross_weight_uom_id = self.env.ref('uom.product_uom_kgm')
+        delivery_note.net_weight = 900.0
+        delivery_note.net_weight_uom_id = self.env.ref('uom.product_uom_gram')
+        delivery_note.packages = 1
+
+        final_invoice.update_delivery_note_lines()
+        final_invoice.partner_id.city = 'Milano'
+        final_invoice.partner_id.street = 'Via Larga, 1'
+        final_invoice.partner_id.country_id = self.env.ref('base.it')
+        final_invoice.date_invoice = '2020-12-04'
+        final_invoice.number = 'TEST/01'
+        final_invoice.invoice_line_ids[4].invoice_line_tax_ids = self.tax_22
+        final_invoice.invoice_line_ids[4].quantity = 1
+        final_invoice.compute_taxes()
+        final_invoice.action_invoice_open()
+
+        res = self.run_wizard(final_invoice.id)
+
+        self.assertTrue(res)
+        attachment = self.attach_model.browse(res['res_id'])
+        file_name_match = (
+            '^%s_[A-Za-z0-9]{5}.xml$' % self.env.user.company_id.vat)
+        # Checking file name randomly generated
+        self.assertTrue(re.search(file_name_match, attachment.datas_fname))
+        self.set_e_invoice_file_id(attachment, 'IT06363391001_00001.xml')
+        self.assertTrue(self.attach_model.file_name_exists('00001'))
+
+        # XML doc to be validated
+        xml_content = base64.decodebytes(attachment.datas)
+        self.check_content(xml_content, 'IT06363391001_00001.xml',
+                module_name='l10n_it_delivery_note')
 
     # ⇒ "Ordine singolo: fatturazione parziale"
     def test_partial_invoicing_single_so(self):
