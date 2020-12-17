@@ -18,7 +18,9 @@ exclude: |
   (l10n_it_fatturapa/data/xsd)|
   # external stylesheets
   (l10n_it_fatturapa/data/fatturaordinaria_v1.2.1.xsl)|
-  (l10n_it_fatturapa/data/FoglioStileAssoSoftware_v1.1.xsl)
+  (l10n_it_fatturapa/data/FoglioStileAssoSoftware_v1.1.xsl)|
+  # Do not touch test data
+  (l10n_it_fatturapa_in/tests/data)
 default_language_version:
   python: python3
   node: "14.13.0"
@@ -130,6 +132,7 @@ repos:
         args:
           - --rcfile=.pylintrc
           - --exit-zero
+          - --ignore=l10n_it_fatturapa_in/tests/data/
         verbose: true
         additional_dependencies: &pylint_deps
           - pylint-odoo==3.5.0
@@ -137,4 +140,5 @@ repos:
         name: pylint with mandatory checks
         args:
           - --rcfile=.pylintrc-mandatory
+          - --ignore=l10n_it_fatturapa_in/tests/data/
         additional_dependencies: *pylint_deps
