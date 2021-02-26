@@ -6,7 +6,7 @@ class AccountTaxKind(models.Model):
     _description = "Tax exemption kind"
 
     code = fields.Char(string="Code", size=4, required=True)
-    name = fields.Char(string="Name", required=True)
+    name = fields.Char(string="Name", required=True, translate=True)
 
     def name_get(self):
         res = []
