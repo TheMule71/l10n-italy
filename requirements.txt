@@ -5,3 +5,4 @@ elementpath
 PyXB >= 1.2.6
 unidecode
 xmlschema
+zipfile
