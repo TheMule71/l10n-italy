@@ -44,13 +44,13 @@ class TestImportZIP(TransactionCase):
             order="sequence",
             limit=1,
         )
-        self.env.user.company_id.arrotondamenti_attivi_account_id = (
+        self.env.company.arrotondamenti_attivi_account_id = (
             arrotondamenti_attivi_account_id
         )
-        self.env.user.company_id.arrotondamenti_passivi_account_id = (
+        self.env.company.arrotondamenti_passivi_account_id = (
             arrotondamenti_passivi_account_id
         )
-        self.env.user.company_id.arrotondamenti_tax_id = arrotondamenti_tax_id
+        self.env.company.arrotondamenti_tax_id = arrotondamenti_tax_id
         account_payable = self.env["account.account"].create(
             {
                 "name": "Test WH tax",
@@ -258,7 +258,6 @@ class TestImportZIP(TransactionCase):
             {
                 "name": "xml_import.zip",
                 "datas": self.getFile("xml_import.zip")[1],
-                "datas_fname": "xml_import.zip",
             }
         )
         attachment.action_import()
