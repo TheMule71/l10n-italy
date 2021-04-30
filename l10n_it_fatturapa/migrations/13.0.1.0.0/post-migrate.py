@@ -6,15 +6,15 @@ from psycopg2 import sql
 
 # account_invoice -> account_move migration
 i_m_columns = (
-    ("fatturapa.payment.data", "invoice_id"),
-    ("welfare.fund.data.line", "invoice_id"),
-    ("withholding.data.line", "invoice_id"),
-    ("discount.rise.price", "invoice_id"),
-    ("fatturapa.related_document_type", "invoice_id"),
-    ("fatturapa.activity.progress", "invoice_id"),
-    ("fatturapa.attachments", "invoice_id"),
-    ("fatturapa.related_ddt", "invoice_id"),
-    ("fatturapa.summary.data", "invoice_id"),
+    ("fatturapa_payment_data", "invoice_id"),
+    ("welfare_fund_data_line", "invoice_id"),
+    ("withholding_data_line", "invoice_id"),
+    ("discount_rise_price", "invoice_id"),
+    ("fatturapa_related_document_type", "invoice_id"),
+    ("fatturapa_activity_progress", "invoice_id"),
+    ("fatturapa_attachments", "invoice_id"),
+    ("fatturapa_related_ddt", "invoice_id"),
+    ("fatturapa_summary_data", "invoice_id"),
 )
 
 invoice_data = (
@@ -47,14 +47,13 @@ invoice_data = (
     ("efatt_stabile_organizzazione_nazione"),
     ("efatt_rounding"),
     ("art73"),
-    ("electronic_invoice_subjected"),
 )
 
 # account_invoice_line -> account_move_line migration
 il_ml_columns = (
-    ("discount.rise.price", "invoice_line_id"),
-    ("fatturapa.related_document_type", "invoice_line_id"),
-    ("fatturapa.related_ddt", "invoice_line_id"),
+    ("discount_rise_price", "invoice_line_id"),
+    ("fatturapa_related_document_type", "invoice_line_id"),
+    ("fatturapa_related_ddt", "invoice_line_id"),
 )
 
 invoice_line_data = (
@@ -71,12 +70,12 @@ def migrate(env, version):
                 env.cr,
                 sql.SQL(
                     """UPDATE {0} t
-                SET t.{1} = m.id
+                SET {1} = m.id
                 FROM account_move m
                 WHERE m.old_invoice_id = t.{1}"""
                 ).format(
-                    sql.Identifier(openupgrade.get_legacy_name(table)),
-                    sql.Identifier(openupgrade.get_legacy_name(column)),
+                    sql.Identifier(table),
+                    sql.Identifier(column),
                 ),
             )
             openupgrade.logged_query(
@@ -88,39 +87,53 @@ def migrate(env, version):
                        WHERE m.old_invoice_id = i.id
                     """
                 ).format(
-                    ",\n".join(
-                        "m.{0} = i.{0}".format(sql.Identifier(col))
+                    sql.SQL(", ").join(
+                        sql.Composed(
+                            [
+                                sql.Identifier(col),
+                                sql.SQL(" = "),
+                                sql.SQL("i."),
+                                sql.Identifier(col),
+                            ]
+                        )
                         for col in invoice_data
                     )
                 ),
             )
 
     elif openupgrade.table_exists(env.cr, "account_invoice"):
-        # relay on move_id, usually for not ('draft' or 'cancel')
+        # rely on move_id, usually for not ('draft' or 'cancel')
         for table, column in i_m_columns:
             openupgrade.logged_query(
                 env.cr,
                 sql.SQL(
                     """UPDATE {0} t
-                SET t.{1} = i.move_id
+                SET {1} = i.move_id
                 FROM account_invoice i
                 WHERE t.{1} = i.id and i.move_id is NOT NULL"""
                 ).format(
-                    sql.Identifier(openupgrade.get_legacy_name(table)),
-                    sql.Identifier(openupgrade.get_legacy_name(column)),
+                    sql.Identifier(table),
+                    sql.Identifier(column),
                 ),
             )
             openupgrade.logged_query(
                 env.cr,
                 sql.SQL(
                     """UPDATE account_move m
-                       SET {}
-                       FROM account_invoice i
-                       WHERE i.move_id = m.id
-                    """
+                                       SET {}
+                                       FROM account_invoice i
+                                       WHERE i.move_id = m.id
+                                    """
                 ).format(
-                    ",\n".join(
-                        "m.{0} = i.{0}".format(sql.Identifier(col))
+                    sql.SQL(", ").join(
+                        sql.Composed(
+                            [
+                                sql.Identifier(col),
+                                sql.SQL(" = "),
+                                sql.SQL("i."),
+                                sql.Identifier(col),
+                            ]
+                        )
                         for col in invoice_data
                     )
                 ),
@@ -134,12 +147,12 @@ def migrate(env, version):
                 env.cr,
                 sql.SQL(
                     """UPDATE {0} t
-                SET t.{1} = ml.id
+                SET {1} = ml.id
                 FROM account_move_line ml
                 WHERE ml.old_invoice_line_id = t.{1}"""
                 ).format(
-                    sql.Identifier(openupgrade.get_legacy_name(table)),
-                    sql.Identifier(openupgrade.get_legacy_name(column)),
+                    sql.Identifier(table),
+                    sql.Identifier(column),
                 ),
             )
             openupgrade.logged_query(
@@ -151,45 +164,71 @@ def migrate(env, version):
                        WHERE ml.old_invoice_line_id = il.id
                     """
                 ).format(
-                    ",\n".join(
-                        "ml.{0} = il.{0}".format(sql.Identifier(col))
+                    sql.SQL(", ").join(
+                        sql.Composed(
+                            [
+                                sql.Identifier(col),
+                                sql.SQL(" = "),
+                                sql.SQL("il."),
+                                sql.Identifier(col),
+                            ]
+                        )
                         for col in invoice_line_data
                     )
                 ),
             )
 
     elif openupgrade.table_exists(env.cr, "account_invoice_line"):
-        # relay on move_id, usually for not ('draft' or 'cancel')
-        for table, column in i_m_columns:
+        move_line_where = """
+        ml.tax_line_id IS NULL
+                AND ml.account_id <> i.account_id
+                AND il.quantity = ml.quantity
+                AND ((il.product_id IS NULL AND ml.product_id IS NULL)
+                    OR il.product_id = ml.product_id)
+                AND ((il.uom_id IS NULL AND ml.product_uom_id IS NULL)
+                    OR il.uom_id = ml.product_uom_id)
+                """
+
+        # rely on move_id, usually for not ('draft' or 'cancel')
+        for table, column in il_ml_columns:
             openupgrade.logged_query(
                 env.cr,
                 sql.SQL(
                     """UPDATE {0} t
-                SET t.{1} = ml.id
+                SET {1} = ml.id
                 FROM account_move_line ml
                 JOIN account_move m ON (m.id = ml.move_id)
                 JOIN account_invoice i ON (i.move_id = m.id)
                 JOIN account_invoice_line il ON (il.invoice_id = i.id)
-                WHERE t.{1} = il.id AND ml.sequence = il.sequence"""
+                WHERE t.{1} = il.id AND {2}"""
                 ).format(
-                    sql.Identifier(openupgrade.get_legacy_name(table)),
-                    sql.Identifier(openupgrade.get_legacy_name(column)),
+                    sql.Identifier(table),
+                    sql.Identifier(column),
+                    sql.SQL(move_line_where),
                 ),
             )
             openupgrade.logged_query(
                 env.cr,
                 sql.SQL(
                     """UPDATE account_move_line ml
-                       SET {}
-                       FROM account_invoice_line il
-                       JOIN account_invoice i ON (i.id = il.invoice_id)
-                       JOIN account_move m ON (m.id = i.move_id)
-                       WHERE ml.sequence = il.sequence
-                    """
+                           SET {0}
+                           FROM account_invoice_line il
+                           JOIN account_invoice i ON (i.id = il.invoice_id)
+                           JOIN account_move m ON (m.id = i.move_id)
+                           WHERE ml.move_id = m.id AND {1}
+                        """
                 ).format(
-                    ",\n".join(
-                        "ml.{0} = il.{0}".format(sql.Identifier(col))
+                    sql.SQL(", ").join(
+                        sql.Composed(
+                            [
+                                sql.Identifier(col),
+                                sql.SQL(" = "),
+                                sql.SQL("il."),
+                                sql.Identifier(col),
+                            ]
+                        )
                         for col in invoice_line_data
-                    )
+                    ),
+                    sql.SQL(move_line_where),
                 ),
             )
