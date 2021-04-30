@@ -1003,7 +1003,8 @@ class WizardImportFatturapa(models.TransientModel):
 
         # compute the invoice
         invoice.with_context(
-            check_move_validity=False)._move_autocomplete_invoice_lines_values()
+            check_move_validity=False
+        )._move_autocomplete_invoice_lines_values()
 
         self.set_vendor_bill_data(FatturaBody, invoice)
 
