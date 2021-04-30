@@ -302,11 +302,7 @@ class WithholdingTaxMove(models.Model):
     )
     statement_id = fields.Many2one("withholding.tax.statement", "Statement")
     wt_type = fields.Selection(
-        [
-            ("in", "In"),
-            ("out", "Out"),
-        ],
-        "Type",
+        string="Type",
         store=True,
         related="statement_id.wt_type",
     )
