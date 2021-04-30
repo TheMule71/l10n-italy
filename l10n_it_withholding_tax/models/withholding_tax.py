@@ -167,9 +167,13 @@ class WithholdingTaxRate(models.Model):
                         ]
                     )
 
-                overlapping_rate = rate.env["withholding.tax.rate"].search(domain, limit=1)
+                overlapping_rate = rate.env["withholding.tax.rate"].search(
+                    domain, limit=1
+                )
                 if overlapping_rate:
-                    raise ValidationError(_("Error! You cannot have 2 rates that overlap!"))
+                    raise ValidationError(
+                        _("Error! You cannot have 2 rates that overlap!")
+                    )
 
     withholding_tax_id = fields.Many2one(
         "withholding.tax", string="Withholding Tax", ondelete="cascade", readonly=True
@@ -298,11 +302,7 @@ class WithholdingTaxMove(models.Model):
     )
     statement_id = fields.Many2one("withholding.tax.statement", "Statement")
     wt_type = fields.Selection(
-        [
-            ("in", "In"),
-            ("out", "Out"),
-        ],
-        "Type",
+        string="Type",
         store=True,
         related="statement_id.wt_type",
     )
