@@ -16,6 +16,7 @@
     "depends": [
         "l10n_it_fatturapa",
         "l10n_it_withholding_tax_reason",
+        "l10n_it_fiscal_document_type",
     ],
     "data": [
         "views/account_view.xml",
