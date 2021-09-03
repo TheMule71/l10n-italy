@@ -59,10 +59,11 @@ rebase_n_merge_pr 2393
 rebase_n_merge_pr 2154
 rebase_n_merge_pr 2043
 rebase_n_merge_pr 2080
-rebase_n_merge_pr 2310 -X theirs
+rebase_n_merge_pr 2310
 rebase_n_merge_pr 2138
 rebase_n_merge_pr 2139
 rebase_n_merge_pr 2149
+rebase_n_merge_pr 2151
 rebase_n_merge_pr 2157
 rebase_n_merge_pr 2198
 rebase_n_merge_pr 2202
