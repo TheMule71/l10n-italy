@@ -269,17 +269,18 @@ class EFatturaOut:
             it defaults to the company default tax which may or may not be non zero in
             the invoice."""
 
-            digits = self.env["decimal.precision"].precision_get("Product Price")
-
             if line.display_type in ("line_section", "line_note"):
                 # find a non-zero tax, if possible
                 tax_lines = line.move_id.line_ids.filtered(
                     lambda line: line.tax_ids
-                    and not (float_is_zero(line.price_total, precision_digits=digits))
+
                 )
                 if tax_lines:
                     return tax_lines[0].tax_ids[0]
-            return line.tax_ids[0]
+            if line.tax_ids[0]:
+                return line.tax_ids[0]
+            else:
+                return False
 
         if self.partner_id.commercial_partner_id.is_pa:
             # check value code
