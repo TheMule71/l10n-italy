@@ -256,7 +256,7 @@ class EFatturaOut:
                 return False
             return line.price_unit * line.discount / 100
 
-        def get_tax_ids(line):
+         def get_tax_ids(line):
             """Get the tax for an invoice line.
 
             Note: SdI expects only one tax per line. Also, it expects to find a tax line
