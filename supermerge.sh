@@ -34,29 +34,25 @@ set -xe
 rebase_n_merge https://github.com/odoo-italia/l10n-italy 14.0-premerge 14.0-premerge
 # fixes
 # rebase_n_merge_pr 2285
-rebase_n_merge_pr 2303
-rebase_n_merge_pr 2305
 rebase_n_merge_pr 2309
 rebase_n_merge_pr 2327
 rebase_n_merge_pr 2335
 rebase_n_merge_pr 2338
 rebase_n_merge_pr 2344
 rebase_n_merge_pr 2346
-rebase_n_merge_pr 2358
-rebase_n_merge_pr 2360
+#rebase_n_merge_pr 2360
 rebase_n_merge_pr 2364
 rebase_n_merge_pr 2367
 rebase_n_merge_pr 2369
 rebase_n_merge_pr 2373
 rebase_n_merge_pr 2388
 rebase_n_merge_pr 2392
-rebase_n_merge_pr 2419
 rebase_n_merge_pr 2425
-rebase_n_merge_pr 2427
 rebase_n_merge_pr 2430
+rebase_n_merge_pr 2432
+rebase_n_merge_pr 2442
+rebase_n_merge_pr 2446
 # porting
-rebase_n_merge_pr 2043
-rebase_n_merge_pr 2080
 rebase_n_merge_pr 2310
 rebase_n_merge_pr 2138
 rebase_n_merge_pr 2139
@@ -75,3 +71,4 @@ rebase_n_merge_pr 2259
 rebase_n_merge_pr 2315
 rebase_n_merge https://github.com/OmniaGit/l10n-italy 14.0-mig-l10n_it_location_nuts 14.0-mig-l10n_it_location_nuts
 rebase_n_merge_pr 2386
+#rebase_n_merge_pr 2438
