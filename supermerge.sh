@@ -36,13 +36,10 @@ rebase_n_merge https://github.com/odoo-italia/l10n-italy 14.0-premerge 14.0-prem
 # rebase_n_merge_pr 2285
 rebase_n_merge_pr 2309
 rebase_n_merge_pr 2327
-rebase_n_merge_pr 2335
-rebase_n_merge_pr 2338
 rebase_n_merge_pr 2344
 rebase_n_merge_pr 2346
 #rebase_n_merge_pr 2360
 rebase_n_merge_pr 2364
-rebase_n_merge_pr 2367
 rebase_n_merge_pr 2369
 rebase_n_merge_pr 2373
 rebase_n_merge_pr 2388
