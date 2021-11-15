@@ -195,16 +195,13 @@ class EFatturaOut:
             even those with price_total == 0.
             """
 
-            def _key(tax_id):
-                return "{}".format(tax_id.id)
-
             out_computed = {}
             # existing tax lines
             tax_ids = record.line_ids.filtered(lambda line: line.tax_line_id)
             for tax_id in tax_ids:
                 tax_line_id = tax_id.tax_line_id
                 aliquota = format_numbers(tax_line_id.amount)
-                key = _key(tax_line_id)
+                key = str(tax_line_id.id)
                 out_computed[key] = {
                     "AliquotaIVA": aliquota,
                     "Natura": tax_line_id.kind_id.code,
@@ -229,7 +226,7 @@ class EFatturaOut:
                     continue
                 for tax_id in line.tax_ids:
                     aliquota = format_numbers(tax_id.amount)
-                    key = _key(tax_id)
+                    key = str(tax_id.id)
                     if key in out_computed:
                         continue
                     if key not in out:
