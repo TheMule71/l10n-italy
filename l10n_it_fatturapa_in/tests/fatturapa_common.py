@@ -187,6 +187,8 @@ class FatturapaCommon(SingleTransactionCase):
         self.data_model = self.env["ir.model.data"]
         self.attach_model = self.env["fatturapa.attachment.in"]
         self.invoice_model = self.env["account.move"]
+        self.invoice_line_model = self.env["account.move.line"]
+        self.partner_model = self.env["res.partner"]
         self.payable_account_id = (
             self.env["account.account"]
             .search(
