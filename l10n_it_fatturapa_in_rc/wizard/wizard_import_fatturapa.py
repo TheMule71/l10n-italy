@@ -43,7 +43,7 @@ class WizardImportFatturapa(models.TransientModel):
         inv_lines = invoice.invoice_line_ids
         if any(inv_lines.mapped("rc")):
             rc_ita_fp = self.env["account.fiscal.position"].search(
-                [("rc_type_id.e_invoice_suppliers", "=", True)]
+                [("rc_type_id.e_invoice_suppliers", "=", True)], limit=1
             )
             if rc_ita_fp:
                 invoice.fiscal_position_id = rc_ita_fp
