@@ -211,7 +211,7 @@ e 'line' per riga di fattura (a seconda del livello in cui sono chiamati)
                     <TipoDato>Valuta</TipoDato>
                     <RiferimentoTesto t-esc="line.currency_id.name" />
                     <RiferimentoNumero
-                        t-esc="format_price(line, original_currency=True)"
+                        t-esc="format_monetary(line.price_subtotal, euro)"
                     />
                     <RiferimentoData t-esc="format_date(record.date)" />
                 </AltriDatiGestionali>
