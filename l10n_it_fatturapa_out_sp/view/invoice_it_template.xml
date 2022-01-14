@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-        <template
+    <template
         id="account_invoice_it_split_payment"
         inherit_id="l10n_it_fatturapa_out.account_invoice_it_fattura_elettronica_body"
     >
+        <xpath expr="//ImportoTotaleDocumento" position="replace" />
         <xpath expr="//ImportoTotaleDocumento" position="replace">
-            <ImportoTotaleDocumento
-                t-if="record.split_payment"
-                t-esc="format_numbers_two(record.amount_total + record.amount_sp)"
-            />
-            <ImportoTotaleDocumento
-                t-if="not record.split_payment"
-                t-esc="format_numbers_two(record.amount_total)"
-            />
+            <t t-if="record.split_payment">
+                <ImportoTotaleDocumento
+                    t-if="record.company_id.xml_divisa_value == 'keep_orig'"
+                    t-esc="format_numbers_two(record.amount_total + record.amount_sp)"
+                />
+                <ImportoTotaleDocumento
+                    t-if="not record.company_id.xml_divisa_value == 'keep_orig'"
+                    t-esc="format_numbers_two(fpa_to_eur(record.amount_total + record.amount_sp, record))"
+                />
+            </t>
+            <t t-else="">
+                <ImportoTotaleDocumento
+                    t-if="record.company_id.xml_divisa_value == 'keep_orig'"
+                    t-esc="format_numbers_two(record.amount_total)"
+                />
+                <ImportoTotaleDocumento
+                    t-if="not record.company_id.xml_divisa_value == 'keep_orig'"
+                    t-esc="format_numbers_two(fpa_to_eur(record.amount_total, record))"
+                />
+            </t>
         </xpath>
-        </template>
+    </template>
 </odoo>
