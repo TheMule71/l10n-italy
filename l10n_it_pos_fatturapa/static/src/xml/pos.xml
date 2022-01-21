@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+    <t
+        t-name="point_of_sale.ClientDetailsEdit"
+        t-inherit="point_of_sale.ClientDetailsEdit"
+        t-inherit-mode="extension"
+        owl="1"
+    >
+        <xpath expr="//div[hasclass('client-details-right')]" position="inside">
+            <div class='client-detail'>
+                <span class='label'>e-Invoice</span>
+                <input
+                    type='checkbox'
+                    class='detail o_checkbox checkbox electronic_invoice_subjected'
+                    name='electronic_invoice_subjected'
+                    t-att-checked="props.partner.electronic_invoice_subjected ? 'checked' : null"
+                    t-att-value="props.partner.electronic_invoice_subjected"
+                    t-on-change="captureChange"
+                />
+
+                <div
+                    id="electronic_invoice_subjected"
+                    t-attf-style="display: #{props.partner.electronic_invoice_subjected ? 'block': 'none'};"
+                >
+                    <div class='client-detail'>
+                        <span class='label'>Code</span>
+                        <input
+                            class='detail codice_destinatario'
+                            name='codice_destinatario'
+                            t-att-value="props.partner.codice_destinatario or '0000000'"
+                            t-on-change="captureChange"
+                        />
+
+                        <span class='label'>PEC</span>
+                        <input
+                            class='detail pec_destinatario'
+                            name='pec_destinatario'
+                            t-att-value="props.partner.pec_destinatario or ''"
+                            t-on-change="captureChange"
+                        />
+
+                        <span class='label'>EORI</span>
+                        <input
+                            class='detail eori_code'
+                            name='eori_code'
+                            t-att-value="props.partner.eori_code or ''"
+                            t-on-change="captureChange"
+                        />
+
+                        <span class='label'>iPA Code</span>
+                        <input
+                            class='detail pa_partner_code'
+                            name='pa_partner_code'
+                            t-att-value="props.partner.pa_partner_code or ''"
+                            t-on-change="captureChange"
+                        />
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>
