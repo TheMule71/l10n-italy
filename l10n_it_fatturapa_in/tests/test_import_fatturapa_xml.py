@@ -166,15 +166,16 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         self.assertEqual(invoice.amount_total, 9)
 
     def test_06_import_except(self):
-        # File not exist Exception
-        self.assertRaises(Exception, self.run_wizard, "test6_Exception", "")
-        # fake Signed file is passed , generate orm_exception
-        self.assertRaises(
-            UserError,
-            self.run_wizard,
-            "test6_orm_exception",
-            "IT05979361218_fake.xml.p7m",
-        )
+        # fake Signed file is passed , generate parsing error
+        with mute_logger("odoo.addons.l10n_it_fatturapa_in.models.attachment"):
+            # File not exist Exception
+            self.assertRaises(Exception, self.run_wizard, "test6_Exception", "")
+            attachment = self.create_attachment(
+                "test6_orm_exception", "IT05979361218_fake.xml.p7m"
+            )
+            self.assertIn("Invalid xml", attachment.e_invoice_parsing_error)
+            # avoid logger errors for subsequent tests
+            attachment.unlink()
 
     def test_07_xml_import(self):
         # 2 lines with quantity != 1 and discounts
@@ -198,18 +199,6 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         )
         self.assertEqual(invoice.e_invoice_validation_error, False)
         self.assertEqual(invoice.invoice_line_ids[0].admin_ref, "D122353")
-
-    def test_08_xml_import(self):
-        # using ImportoTotaleDocumento
-        res = self.run_wizard("test8", "IT05979361218_005.xml")
-        invoice_id = res.get("domain")[0][2][0]
-        invoice = self.invoice_model.browse(invoice_id)
-        self.assertEqual(invoice.ref, "FT/2015/0010")
-        self.assertEqual(invoice.payment_reference, "FT/2015/0010")
-        self.assertAlmostEqual(invoice.amount_total, 1288.61)
-        self.assertFalse(invoice.inconsistencies)
-        # allow following test to reuse the same XML file
-        invoice.ref = invoice.payment_reference = "14081"
 
     def test_08_xml_import_no_account(self):
         """Check that a useful error message is raised when
@@ -235,21 +224,11 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         self.assertIn(journal.display_name, ue.exception.args[0])
         self.assertIn(company.display_name, ue.exception.args[0])
 
-        discount_amount = -143.18
-
         # Restore the property and import the invoice
         expense_default_property.res_id = False
         res = self.run_wizard("test8_with_property", "IT05979361218_005.xml")
         invoice_id = res.get("domain")[0][2][0]
         invoice = self.invoice_model.browse(invoice_id)
-        invoice_lines = invoice.invoice_line_ids
-        discount_line = invoice_lines.filtered(
-            lambda line: line.price_unit == discount_amount
-        )
-        self.assertEqual(
-            discount_line.account_id,
-            expense_default_property.get_by_record(),
-        )
         # allow following code to reuse the same XML file
         invoice.ref = invoice.payment_reference = "14083"
 
@@ -258,32 +237,9 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         res = self.run_wizard("test8_with_journal", "IT05979361218_005.xml")
         invoice_id = res.get("domain")[0][2][0]
         invoice = self.invoice_model.browse(invoice_id)
-        invoice_lines = invoice.invoice_line_ids
-        discount_line = invoice_lines.filtered(
-            lambda line: line.price_unit == discount_amount
-        )
-        self.assertEqual(
-            discount_line.account_id,
-            journal_account,
-        )
         self.assertTrue(invoice)
         # allow following tests to reuse the same XML file
         invoice.ref = invoice.payment_reference = "14084"
-
-    def test_09_xml_import(self):
-        # using DatiGeneraliDocumento.ScontoMaggiorazione without
-        # ImportoTotaleDocumento
-        # add test file name case sensitive
-        res = self.run_wizard("test9", "IT05979361218_006.XML")
-        invoice_id = res.get("domain")[0][2][0]
-        invoice = self.invoice_model.browse(invoice_id)
-        self.assertEqual(invoice.ref, "FT/2015/0011")
-        self.assertEqual(invoice.payment_reference, "FT/2015/0011")
-        self.assertAlmostEqual(invoice.amount_total, 1288.61)
-        self.assertEqual(
-            invoice.inconsistencies,
-            "Computed amount untaxed 1030.42 is different from" " summary data 1173.6",
-        )
 
     def test_10_xml_import(self):
         # Fix Date format
@@ -933,6 +889,22 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         self.assertEqual(invoice.partner_id.firstname, "Mario")
         self.assertEqual(invoice.partner_id.lastname, "Rossi")
 
+    def test_52_12_xml_import(self):
+        """
+        Check that an XML with syntax error is created,
+        but it shows a parsing error.
+        """
+        with mute_logger("odoo.addons.l10n_it_fatturapa_in.models.attachment"):
+            attachment = self.create_attachment(
+                "test52_12",
+                "ZGEXQROO37831_anonimizzata.xml",
+            )
+            self.assertIn(
+                "Impossible to parse XML for test52_12:",
+                attachment.e_invoice_parsing_error or "",
+            )
+            attachment.unlink()
+
     def test_53_xml_import(self):
         """
         Check that VAT of non-IT partner is not checked.
@@ -1164,6 +1136,19 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
             )
             e_invoice = invoices.fatturapa_doc_attachments
             self.assertTrue(e_invoice.ir_attachment_id.read())
+
+    def test_ignore_global_discount(self):
+        """The nodes
+        - DatiGeneraliDocumento/ScontoMaggiorazione
+        - DatiGeneraliDocumento/ImportoTotaleDocumento
+        are not considered for invoice validation/consistency.
+        """
+        res = self.run_wizard("ignore_global_discount", "IT08973230967_6zZcm.xml")
+        invoice = self.invoice_model.search(res["domain"])
+        self.assertFalse(invoice.inconsistencies)
+        self.assertEqual(invoice.amount_untaxed, 23.27)
+        self.assertEqual(invoice.amount_tax, 5.12)
+        self.assertEqual(invoice.amount_total, 28.39)
 
 
 class TestFatturaPAEnasarco(FatturapaCommon):
