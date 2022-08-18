@@ -186,6 +186,16 @@ class WizardExportFatturapa(models.TransientModel):
         """
         return template_values
 
+    @api.model
+    def _get_e_invoice_lines(self, invoice):
+        """
+        Invoice lines are not all to be translated to e-invoice lines.
+
+        For instance, some invoice lines will be translated
+        to DatiCassaPrevidenziale nodes.
+        """
+        return invoice.invoice_line_ids
+
     def group_invoices_by_partner(self):
         def split_list(my_list, size):
             it = iter(my_list)
