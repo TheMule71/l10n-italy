@@ -3,3 +3,4 @@ codicefiscale
 openupgradelib
 xmlschema
 openupgradelib
+codicefiscale
