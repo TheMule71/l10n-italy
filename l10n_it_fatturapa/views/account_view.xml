@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <data>
         <menuitem
-            name="Electronic Invoice"
-            id="menu_fattura_pa_receivables"
-            parent="account.menu_finance_receivables"
-        />
+        name="Electronic Invoice"
+        id="menu_fattura_pa_receivables"
+        parent="account.menu_finance_receivables"
+    />
         <menuitem
-            name="Electronic Bill"
-            id="menu_fattura_pa_payables"
-            parent="account.menu_finance_payables"
-        />
+        name="Electronic Bill"
+        id="menu_fattura_pa_payables"
+        parent="account.menu_finance_payables"
+    />
 
         <record id="view_invoice_form_fatturapa" model="ir.ui.view">
             <field name="name">account.invoice.fatturapa</field>
@@ -29,9 +28,9 @@
                 </xpath>
 -->
                 <xpath
-                    expr="//field[@name='invoice_line_ids']/form/sheet/field[@name='name']"
-                    position="after"
-                >
+                expr="//field[@name='invoice_line_ids']/form/sheet/field[@name='name']"
+                position="after"
+            >
                     <separator string="Electronic Invoice" />
                     <div id="admin_ref">
                         <group>
@@ -46,9 +45,8 @@
         </record>
 
         <menuitem
-            id="fatturapa_common_menu"
-            name="Electronic invoicing"
-            parent="l10n_it_account.account_italian_localization"
-        />
-    </data>
+        id="fatturapa_common_menu"
+        name="Electronic invoicing"
+        parent="l10n_it_account.account_italian_localization"
+    />
 </odoo>

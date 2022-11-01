@@ -2,11 +2,12 @@
 # Copyright 2015-2016 Lorenzo Battistini - Agile Business Group
 # Copyright 2018-2019 Sergio Zanchetta (Associazione PNLUG - Gruppo Odoo)
 # Copyright 2019 Gianluigi Tiesi - Netfarm S.r.l.
+# Copyright 2022 Marco Colombo <marco.colombo@phi.technology>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
     "name": "ITA - Fattura elettronica - Base",
-    "version": "14.0.1.2.2",
+    "version": "16.0.1.0.0",
     "category": "Localization/Italy",
     "summary": "Fatture elettroniche",
     "author": "Davide Corio, Agile Business Group, Innoviu, "

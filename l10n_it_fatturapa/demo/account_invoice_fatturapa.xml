@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
 
         <record id="tax_22" model="account.tax">
             <field name="name">22% e-inv</field>
@@ -8,9 +7,9 @@
             <field name="amount">22</field>
             <field name="type_tax_use">sale</field>
             <field
-                name="invoice_repartition_line_ids"
-                model="account.tax.repartition.line"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            model="account.tax.repartition.line"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -18,14 +17,14 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'tax',
-                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('user_type_id', '=', ref('account.data_account_type_current_liabilities'))], limit=1).id,
+                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('account_type', '=', 'liability_current')], limit=1).id,
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                model="account.tax.repartition.line"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            model="account.tax.repartition.line"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -33,10 +32,10 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'tax',
-                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('user_type_id', '=', ref('account.data_account_type_current_liabilities'))], limit=1).id,
+                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('account_type', '=', 'liability_current')], limit=1).id,
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_10" model="account.tax">
@@ -45,9 +44,9 @@
             <field name="amount">10</field>
             <field name="type_tax_use">sale</field>
             <field
-                name="invoice_repartition_line_ids"
-                model="account.tax.repartition.line"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            model="account.tax.repartition.line"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -55,14 +54,14 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'tax',
-                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('user_type_id', '=', ref('account.data_account_type_current_liabilities'))], limit=1).id,
+                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('account_type', '=', 'liability_current')], limit=1).id,
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                model="account.tax.repartition.line"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            model="account.tax.repartition.line"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -70,10 +69,10 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'tax',
-                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('user_type_id', '=', ref('account.data_account_type_current_liabilities'))], limit=1).id,
+                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('account_type', '=', 'liability_current')], limit=1).id,
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_22_acq" model="account.tax">
@@ -82,9 +81,9 @@
             <field name="amount">22</field>
             <field name="type_tax_use">purchase</field>
             <field
-                name="invoice_repartition_line_ids"
-                model="account.tax.repartition.line"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            model="account.tax.repartition.line"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -92,14 +91,14 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'tax',
-                    'account_id': ref('l10n_it.1601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_receivable', raise_if_not_found=False) or obj().env['account.account'].search([('user_type_id', '=', ref('account.data_account_type_current_assets'))], limit=1).id,
+                    'account_id': ref('l10n_it.1601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_receivable', raise_if_not_found=False) or obj().env['account.account'].search([('account_type', '=', 'asset_current')], limit=1).id,
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                model="account.tax.repartition.line"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            model="account.tax.repartition.line"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -107,10 +106,10 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'tax',
-                    'account_id': ref('l10n_it.1601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_receivable', raise_if_not_found=False) or obj().env['account.account'].search([('user_type_id', '=', ref('account.data_account_type_current_assets'))], limit=1).id,
+                    'account_id': ref('l10n_it.1601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_receivable', raise_if_not_found=False) or obj().env['account.account'].search([('account_type', '=', 'asset_current')], limit=1).id,
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_22_SP" model="account.tax">
@@ -120,9 +119,9 @@
             <field name="payability">S</field>
             <field name="type_tax_use">sale</field>
             <field
-                name="invoice_repartition_line_ids"
-                model="account.tax.repartition.line"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            model="account.tax.repartition.line"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -130,14 +129,14 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'tax',
-                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('user_type_id', '=', ref('account.data_account_type_current_liabilities'))], limit=1).id,
+                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('account_type', '=', 'liability_current')], limit=1).id,
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                model="account.tax.repartition.line"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            model="account.tax.repartition.line"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -145,10 +144,10 @@
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'tax',
-                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('user_type_id', '=', ref('account.data_account_type_current_liabilities'))], limit=1).id,
+                    'account_id': ref('l10n_it.2601', raise_if_not_found=False) or ref('l10n_generic_coa.tax_payable', raise_if_not_found=False) or obj().env['account.account'].search([('account_type', '=', 'liability_current')], limit=1).id,
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_00_minimi" model="account.tax">
@@ -157,12 +156,12 @@
             <field name="amount">0.00</field>
             <field name="kind_id" ref="l10n_it_account_tax_kind.n4" />
             <field
-                name="law_reference"
-            >Minimum contributors regime art.27 c.1-2 DL.98/11</field>
+            name="law_reference"
+        >Minimum contributors regime art.27 c.1-2 DL.98/11</field>
             <field name="type_tax_use">sale</field>
             <field
-                name="invoice_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -172,10 +171,10 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -185,7 +184,7 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_00_minimi_acq" model="account.tax">
@@ -194,12 +193,12 @@
             <field name="amount">0.00</field>
             <field name="kind_id" ref="l10n_it_account_tax_kind.n4" />
             <field
-                name="law_reference"
-            >Minimum contributors regime art.27 c.1-2 DL.98/11</field>
+            name="law_reference"
+        >Minimum contributors regime art.27 c.1-2 DL.98/11</field>
             <field name="type_tax_use">purchase</field>
             <field
-                name="invoice_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -209,10 +208,10 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -222,7 +221,7 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_00_e15" model="account.tax">
@@ -232,8 +231,8 @@
             <field name="kind_id" ref="l10n_it_account_tax_kind.n1" />
             <field name="law_reference">Excluding ex Article 15</field>
             <field
-                name="invoice_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -243,10 +242,10 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -256,7 +255,7 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_00_ns" model="account.tax">
@@ -266,8 +265,8 @@
             <field name="kind_id" ref="l10n_it_account_tax_kind.n2_1" />
             <field name="law_reference">Not subject to VAT law</field>
             <field
-                name="invoice_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -277,10 +276,10 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -290,7 +289,7 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_00_ni" model="account.tax">
@@ -300,8 +299,8 @@
             <field name="kind_id" ref="l10n_it_account_tax_kind.n3_1" />
             <field name="law_reference">Not subject to VAT law</field>
             <field
-                name="invoice_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -311,10 +310,10 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -324,7 +323,7 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_00_rc" model="account.tax">
@@ -334,8 +333,8 @@
             <field name="kind_id" ref="l10n_it_account_tax_kind.n6_1" />
             <field name="law_reference">Reverse Charge</field>
             <field
-                name="invoice_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -345,10 +344,10 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -358,7 +357,7 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="tax_00_enas" model="account.tax">
@@ -368,8 +367,8 @@
             <field name="kind_id" ref="l10n_it_account_tax_kind.n2_2" />
             <field name="law_reference">Escluso Art. 13 5C DPR 633/72</field>
             <field
-                name="invoice_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="invoice_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -379,10 +378,10 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
             <field
-                name="refund_repartition_line_ids"
-                eval="[(5, 0, 0),
+            name="refund_repartition_line_ids"
+            eval="[(5, 0, 0),
                 (0,0, {
                     'factor_percent': 100,
                     'repartition_type': 'base',
@@ -392,7 +391,7 @@
                     'repartition_type': 'tax',
                 }),
             ]"
-            />
+        />
         </record>
 
         <record id="base.main_company" model="res.company">
@@ -411,17 +410,17 @@
         </record>
 
         <record
-            id="account.account_payment_term_immediate"
-            model="account.payment.term"
-        >
+        id="account.account_payment_term_immediate"
+        model="account.payment.term"
+    >
             <field
-                name="fatturapa_pt_id"
-                ref="l10n_it_fiscal_payment_term.fatturapa_tp02"
-            />
+            name="fatturapa_pt_id"
+            ref="l10n_it_fiscal_payment_term.fatturapa_tp02"
+        />
             <field
-                name="fatturapa_pm_id"
-                ref="l10n_it_fiscal_payment_term.fatturapa_mp05"
-            />
+            name="fatturapa_pm_id"
+            ref="l10n_it_fiscal_payment_term.fatturapa_mp05"
+        />
         </record>
 
         <record id="res_partner_fatturapa_0" model="res.partner">
@@ -515,5 +514,4 @@
             <field name="email">b2c@example.com</field>
             <field name="fiscalcode">RSSMRA30A01H501I</field>
         </record>
-    </data>
 </odoo>
