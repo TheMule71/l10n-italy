@@ -26,15 +26,6 @@ class TestDuplicatedAttachment(FatturapaCommon):
 
 
 class TestFatturaPAXMLValidation(FatturapaCommon):
-    def setUp(self):
-        super(TestFatturaPAXMLValidation, self).setUp()
-        self.wt = self.create_wt_4q()
-        self.wtq = self.create_wt_27_20q()
-        self.wt4q = self.create_wt_26_40q()
-        self.wt2q = self.create_wt_26_20q()
-        self.invoice_model = self.env["account.move"]
-        self.wizard_link_inv_line_model = self.env["wizard.link.to.invoice.line"]
-
     def test_00_xml_import(self):
         self.env.company.cassa_previdenziale_product_id = self.service.id
         res = self.run_wizard("test0", "IT05979361218_001.xml")
@@ -363,7 +354,7 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         self.assertEqual(invoice.payment_reference, "136")
         self.assertEqual(invoice.partner_id.name, "SOCIETA' ALPHA SRL")
         self.assertEqual(invoice.amount_untaxed, 25.00)
-        self.assertEqual(invoice.amount_tax, 0.0)
+        self.assertEqual(invoice.amount_tax, 3.75)
         self.assertEqual(
             invoice.inconsistencies,
             "Company Name field contains 'Societa' "
@@ -412,7 +403,7 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         # I create a supplier code to be matched in XML
         self.env["product.supplierinfo"].create(
             {
-                "name": partner.id,
+                "partner_id": partner.id,
                 "product_tmpl_id": self.headphones.id,
                 "product_code": "ART123",
             }
@@ -712,25 +703,23 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         )
 
     def test_37_xml_import_dates(self):
-        self.env.user.lang = "it_IT"
         res = self.run_wizard("test37", "IT02780790107_11004.xml")
         invoice_id = res.get("domain")[0][2][0]
         invoice = self.invoice_model.browse(invoice_id)
-        self.assertEqual(invoice.fatturapa_attachment_in_id.invoices_date, "18/12/2014")
+        self.assertEqual(invoice.fatturapa_attachment_in_id.invoices_date, "12/18/2014")
         # allow following tests to reuse the same XML file
         invoice.ref = invoice.payment_reference = "14371"
 
     def test_38_xml_import_dates(self):
         # file B2B downloaded from
         # http://www.fatturapa.gov.it/export/fatturazione/it/a-3.htm
-        self.env.user.lang = "it_IT"
         res = self.run_wizard("test38", "IT01234567890_FPR03.xml")
         invoice_ids = res.get("domain")[0][2]
         invoices = self.invoice_model.browse(invoice_ids)
         self.assertEqual(len(invoices), 2)
         self.assertEqual(
             invoices[0].fatturapa_attachment_in_id.invoices_date,
-            "18/12/2014 20/12/2014",
+            "12/18/2014 12/20/2014",
         )
         # allow following tests to reuse the same XML file
         invoices[0].ref = invoices[0].payment_reference = "14381"
@@ -835,15 +824,19 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         # IT01234567890_FPR14.xml should be tested manually
 
     def test_48_xml_import(self):
+        # depends on test_36_xml_import
         # my company bank account is the same as the one in XML:
         # invoice creation must not be blocked
-        self.env["res.partner.bank"].create(
+        partner_bank = self.env["res.partner.bank"].create(
             {
                 "acc_number": "IT59R0100003228000000000622",
                 "company_id": self.env.company.id,
                 "partner_id": self.env.company.partner_id.id,
             }
         )
+        # 16.0: company_id gets reset right after creation
+        partner_bank.company_id = self.env.company
+        self.assertEqual(partner_bank.company_id, self.env.company)
         res = self.run_wizard("test48", "IT01234567890_FPR15.xml")
         invoice_id = res.get("domain")[0][2][0]
         invoice = self.invoice_model.browse(invoice_id)
@@ -867,7 +860,7 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         )[0]
         self.env["product.supplierinfo"].create(
             {
-                "name": partner_id,
+                "partner_id": partner_id,
                 "product_name": "FORNITURE VARIE PER UFFICIO",
                 "product_id": product_id,
                 "min_qty": 1,
@@ -895,6 +888,7 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         invoice = self.invoice_model.browse(invoice_ids)
         self.assertTrue(invoice.fatturapa_attachment_in_id.is_self_invoice)
 
+    # XXX probably useless now
     def test_53_xml_import(self):
         """
         Check that VAT of non-IT partner is not checked.
@@ -920,7 +914,10 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
 
         # Assert: A partner with vat GB99999999999 exists,
         # and the vat is usually not valid for UK
-        self.assertTrue(vat_partner_exists())
+
+        # XXX changed to false, now it works as intented
+        self.assertFalse(vat_partner_exists())
+
         with self.assertRaises(ValidationError) as ve:
             partner_model.create(
                 [
@@ -938,6 +935,7 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
                 not_valid_vat=not_valid_vat,
             ),
         )
+        self.wizard_model.reset_inconsistencies()
 
     def test_01_xml_link(self):
         """
@@ -1018,6 +1016,7 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
 
     def test_xml_import_summary_tax_rate(self):
         # Invoice  with positive total. Detail Level:  '1' -- Tax Rate
+        # Note: this test depends on test_14_xml_import for supplier creation
         supplier = self.env["res.partner"].search([("vat", "=", "IT02780790107")])[0]
         # in order to make the system create the invoice lines
         supplier.e_invoice_detail_level = "1"
@@ -1039,15 +1038,23 @@ class TestFatturaPAXMLValidation(FatturapaCommon):
         self.assertEqual(invoices.mapped("e_invoice_validation_error"), [False, False])
 
     def test_duplicated_vat_on_partners(self):
-        supplier = self.env["res.partner"].search(
-            [("vat", "=", "IT05979361218")], limit=1
+        vat = "IT05979361218"
+        supplier = self.env["res.partner"].create(
+            {
+                "name": "supplier",
+                "vat": vat,
+            }
         )
-
-        duplicated_supplier = supplier.copy()
+        duplicated_supplier = self.env["res.partner"].create(
+            {
+                "name": "duplicated_supplier",
+                "vat": vat,
+            }
+        )
         self.assertEqual(supplier.vat, duplicated_supplier.vat)
         attach = self.run_wizard("duplicated_vat", "IT05979361218_012.xml", mode=False)
         self.assertFalse(attach.xml_supplier_id)
-        self.assertTrue(attach.inconsistencies)
+        self.assertIn(vat, attach.inconsistencies)
 
 
 class TestFatturaPAEnasarco(FatturapaCommon):
@@ -1061,7 +1068,7 @@ class TestFatturaPAEnasarco(FatturapaCommon):
             {
                 "name": "Test WH tax",
                 "code": "whtaxpay2",
-                "user_type_id": self.env.ref("account.data_account_type_payable").id,
+                "account_type": "liability_payable",
                 "reconcile": True,
             }
         )
@@ -1069,11 +1076,16 @@ class TestFatturaPAEnasarco(FatturapaCommon):
             {
                 "name": "Test WH tax",
                 "code": "whtaxrec2",
-                "user_type_id": self.env.ref("account.data_account_type_receivable").id,
+                "account_type": "asset_receivable",
                 "reconcile": True,
             }
         )
-        misc_journal = self.env["account.journal"].search([("code", "=", "MISC")])
+        misc_journal = self.env["account.journal"].search(
+            [
+                ("company_id", "=", self.env.company.id),
+                ("code", "=", "MISC"),
+            ]
+        )
         self.env["withholding.tax"].create(
             {
                 "name": "Enasarco",
