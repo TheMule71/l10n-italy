@@ -5,7 +5,7 @@
     "name": "ITA - Causali pagamento",
     "summary": "Aggiunge la tabella delle causali di pagamento da usare ad esempio "
     "nelle ritenute d'acconto",
-    "version": "14.0.1.1.0",
+    "version": "16.0.1.0.0",
     "development_status": "Production/Stable",
     "category": "Account",
     "author": "Agile Business Group," "Odoo Community Association (OCA)",
