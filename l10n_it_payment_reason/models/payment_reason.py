@@ -1,3 +1,6 @@
+#  Copyright 2022 Simone Rubino - TAKOBI
+#  License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
@@ -25,5 +28,5 @@ class PaymentReason(models.Model):
             res.append((cau.id, name))
         return res
 
-    code = fields.Char(string="Code", size=2, required=True)
+    code = fields.Char(size=2, required=True)
     name = fields.Text(string="Description", required=True)
