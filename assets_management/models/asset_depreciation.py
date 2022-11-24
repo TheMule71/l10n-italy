@@ -173,7 +173,7 @@ class AssetDepreciation(models.Model):
             deps = self.filtered(
                 lambda l: l.dismiss_move_id and l.dismiss_move_id.state != "draft"
             )
-            name_list = "\n".join([l[-1] for l in deps.name_get()])
+            name_list = "\n".join([line[-1] for line in deps.name_get()])
             raise ValidationError(
                 _(
                     "Following lines are linked to posted account moves, and"
@@ -360,17 +360,17 @@ class AssetDepreciation(models.Model):
                     "amount_depreciable_updated": amt_dep
                     + sum(
                         [
-                            l.balance
-                            for l in self.line_ids
-                            if l.move_type in update_move_types
+                            line.balance
+                            for line in self.line_ids
+                            if line.move_type in update_move_types
                         ]
                     ),
                     "amount_residual": amt_dep
                     + sum(
                         [
-                            l.balance
-                            for l in self.line_ids
-                            if l.move_type not in non_residual_types
+                            line.balance
+                            for line in self.line_ids
+                            if line.move_type not in non_residual_types
                         ]
                     ),
                 }
@@ -382,9 +382,9 @@ class AssetDepreciation(models.Model):
         types = self.line_ids.get_update_move_types()
         return self.amount_depreciable + sum(
             [
-                l.balance
-                for l in self.line_ids
-                if l.move_type in types and (not dep_date or l.date <= dep_date)
+                line.balance
+                for line in self.line_ids
+                if line.move_type in types and (not dep_date or line.date <= dep_date)
             ]
         )
 

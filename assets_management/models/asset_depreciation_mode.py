@@ -42,7 +42,8 @@ class AssetDepreciationMode(models.Model):
             {
                 "default": False,
                 "line_ids": [
-                    (0, 0, l.copy_data({"mode_id": False})[0]) for l in self.line_ids
+                    (0, 0, line.copy_data({"mode_id": False})[0])
+                    for line in self.line_ids
                 ],
             }
         )

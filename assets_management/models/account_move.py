@@ -85,8 +85,8 @@ class AccountMove(models.Model):
                 move.hide_link_asset_button = (
                     not any(
                         [
-                            l.account_id.id in valid_account_ids.ids
-                            for l in move.line_ids
+                            line.account_id.id in valid_account_ids.ids
+                            for line in move.line_ids
                         ]
                     )
                     or move.state != "posted"

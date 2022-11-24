@@ -41,10 +41,6 @@ class WizardAssetJournalReport(models.TransientModel):
         return str(date.today().year)
 
     @api.model
-    def get_default_report_footer_year(self):
-        return str(date.today().year)
-
-    @api.model
     def get_default_type_ids(self):
         return self.env["asset.depreciation.type"].search(
             [("print_by_default", "=", True)]

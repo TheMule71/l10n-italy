@@ -208,8 +208,8 @@ class WizardInvoiceManageAsset(models.TransientModel):
 
         if not all(
             [
-                l.account_id == self.category_id.asset_account_id
-                for l in self.invoice_line_ids
+                line.account_id == self.category_id.asset_account_id
+                for line in self.invoice_line_ids
             ]
         ):
             categ_name = self.category_id.name_get()[0][-1]
@@ -239,8 +239,8 @@ class WizardInvoiceManageAsset(models.TransientModel):
 
         if not all(
             [
-                l.account_id == self.asset_id.category_id.asset_account_id
-                for l in self.invoice_line_ids
+                line.account_id == self.asset_id.category_id.asset_account_id
+                for line in self.invoice_line_ids
             ]
         ):
             ass_name = self.asset_id.make_name()
@@ -277,8 +277,8 @@ class WizardInvoiceManageAsset(models.TransientModel):
 
         if not all(
             [
-                l.account_id == self.asset_id.category_id.asset_account_id
-                for l in self.invoice_line_ids
+                line.account_id == self.asset_id.category_id.asset_account_id
+                for line in self.invoice_line_ids
             ]
         ):
             ass_name = self.asset_id.make_name()
@@ -305,8 +305,8 @@ class WizardInvoiceManageAsset(models.TransientModel):
 
         if not all(
             [
-                l.account_id == self.asset_id.category_id.asset_account_id
-                for l in self.invoice_line_ids
+                line.account_id == self.asset_id.category_id.asset_account_id
+                for line in self.invoice_line_ids
             ]
         ):
             ass_name = self.asset_id.make_name()
@@ -344,8 +344,12 @@ class WizardInvoiceManageAsset(models.TransientModel):
         purchase_invoice = self.invoice_line_ids.mapped("invoice_id")
         return {
             "asset_accounting_info_ids": [
-                (0, 0, {"invoice_line_id": l.id, "relation_type": self.management_type})
-                for l in self.invoice_line_ids
+                (
+                    0,
+                    0,
+                    {"invoice_line_id": line.id, "relation_type": self.management_type},
+                )
+                for line in self.invoice_line_ids
             ],
             "category_id": self.category_id.id,
             "code": self.code,
@@ -381,8 +385,8 @@ class WizardInvoiceManageAsset(models.TransientModel):
         inv_num = invoice.number
 
         writeoff = 0
-        for l in self.invoice_line_ids:
-            writeoff += l.currency_id.compute(l.price_subtotal, currency)
+        for line in self.invoice_line_ids:
+            writeoff += line.currency_id.compute(line.price_subtotal, currency)
         writeoff = round(writeoff, digits)
 
         vals = {
@@ -404,11 +408,11 @@ class WizardInvoiceManageAsset(models.TransientModel):
                         0,
                         0,
                         {
-                            "invoice_line_id": l.id,
+                            "invoice_line_id": line.id,
                             "relation_type": self.management_type,
                         },
                     )
-                    for l in self.invoice_line_ids
+                    for line in self.invoice_line_ids
                 ],
                 "amount": min(residual, dep_writeoff),
                 "date": dismiss_date,
@@ -427,11 +431,11 @@ class WizardInvoiceManageAsset(models.TransientModel):
                             0,
                             0,
                             {
-                                "invoice_line_id": l.id,
+                                "invoice_line_id": line.id,
                                 "relation_type": self.management_type,
                             },
                         )
-                        for l in self.invoice_line_ids
+                        for line in self.invoice_line_ids
                     ],
                     "amount": abs(balance),
                     "date": dismiss_date,
@@ -475,8 +479,8 @@ class WizardInvoiceManageAsset(models.TransientModel):
         inv_num = invoice.number
 
         writeoff = 0
-        for l in self.invoice_line_ids:
-            writeoff += l.currency_id.compute(l.price_subtotal, currency)
+        for line in self.invoice_line_ids:
+            writeoff += line.currency_id.compute(line.price_subtotal, currency)
         writeoff = round(writeoff, digits)
 
         vals = {"depreciation_ids": []}
@@ -496,11 +500,11 @@ class WizardInvoiceManageAsset(models.TransientModel):
                         0,
                         0,
                         {
-                            "invoice_line_id": l.id,
+                            "invoice_line_id": line.id,
                             "relation_type": self.management_type,
                         },
                     )
-                    for l in self.invoice_line_ids
+                    for line in self.invoice_line_ids
                 ],
                 "amount": purchase_amt,
                 "date": dismiss_date,
@@ -514,11 +518,11 @@ class WizardInvoiceManageAsset(models.TransientModel):
                         0,
                         0,
                         {
-                            "invoice_line_id": l.id,
+                            "invoice_line_id": line.id,
                             "relation_type": self.management_type,
                         },
                     )
-                    for l in self.invoice_line_ids
+                    for line in self.invoice_line_ids
                 ],
                 "amount": -fund_amt,
                 "date": dismiss_date,
@@ -537,11 +541,11 @@ class WizardInvoiceManageAsset(models.TransientModel):
                             0,
                             0,
                             {
-                                "invoice_line_id": l.id,
+                                "invoice_line_id": line.id,
                                 "relation_type": self.management_type,
                             },
                         )
-                        for l in self.invoice_line_ids
+                        for line in self.invoice_line_ids
                     ],
                     "amount": abs(balance),
                     "date": dismiss_date,
@@ -562,11 +566,11 @@ class WizardInvoiceManageAsset(models.TransientModel):
         digits = self.env["decimal.precision"].precision_get("Account")
 
         grouped_invoice_lines = {}
-        for l in self.invoice_line_ids:
-            inv = l.invoice_id
+        for line in self.invoice_line_ids:
+            inv = line.invoice_id
             if inv not in grouped_invoice_lines:
                 grouped_invoice_lines[inv] = self.env["account.invoice.line"]
-            grouped_invoice_lines[inv] |= l
+            grouped_invoice_lines[inv] |= line
 
         vals = {"depreciation_ids": []}
         for dep in asset.depreciation_ids.filtered(
@@ -620,11 +624,11 @@ class WizardInvoiceManageAsset(models.TransientModel):
                             0,
                             0,
                             {
-                                "invoice_line_id": l.id,
+                                "invoice_line_id": line.id,
                                 "relation_type": self.management_type,
                             },
                         )
-                        for l in lines
+                        for line in lines
                     ],
                     "amount": amount,
                     "date": inv.date,

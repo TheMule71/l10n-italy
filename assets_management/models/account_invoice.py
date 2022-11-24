@@ -84,8 +84,8 @@ class AccountInvoice(models.Model):
             for inv in self:
                 inv.hide_link_asset_button = not any(
                     [
-                        l.account_id.id in valid_account_ids.ids
-                        for l in inv.invoice_line_ids
+                        line.account_id.id in valid_account_ids.ids
+                        for line in inv.invoice_line_ids
                     ]
                 ) or inv.state in ("draft", "cancel")
 
@@ -93,7 +93,7 @@ class AccountInvoice(models.Model):
     def open_wizard_manage_asset(self):
         self.ensure_one()
         lines = self.invoice_line_ids.filtered(
-            lambda l: not l.asset_accounting_info_ids
+            lambda line: not line.asset_accounting_info_ids
         )
         if not lines:
             raise ValidationError(_("Every line is already linked to an asset."))

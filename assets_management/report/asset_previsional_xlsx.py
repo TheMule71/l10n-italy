@@ -573,7 +573,7 @@ class AssetJournalXslx(models.AbstractModel):
         for col, data in data.items():
             value, style = getattr(obj, data["field"]), data["vstyle"]
             if data.get("type") == "amount":
-                value = getattr(obj, "format_amount")(value)
+                value = obj.format_amount(value)
             if value in (False, None):
                 value = "/"
             self.sheet.write(pos, col, value, style)

@@ -38,8 +38,8 @@ class DepLineType(models.Model):
                 raise ValidationError(
                     _(
                         "Cannot remove type {}: there is some depreciation"
-                        " line linked to it.".format(line_type.name)
-                    )
+                        " line linked to it."
+                    ).format(line_type.name)
                 )
 
         return super().unlink()

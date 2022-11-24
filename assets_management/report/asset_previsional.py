@@ -254,8 +254,9 @@ class Report(models.TransientModel):
                     for fyear, lines in lines_by_fyear.items():
                         if fyear.date_to >= dep.date_start:
                             prev = not lines or not any(
-                                l.move_type == "depreciated" and not l.partial_dismissal
-                                for l in lines
+                                line.move_type == "depreciated"
+                                and not line.partial_dismissal
+                                for line in lines
                             )
                             sequence += 1
                             line_ids = lines.ids

@@ -148,7 +148,7 @@ class AssetDepreciationLine(models.Model):
     def unlink(self):
         if self.mapped("asset_accounting_info_ids"):
             lines = self.filtered("asset_accounting_info_ids")
-            name_list = "\n".join([l[-1] for l in lines.name_get()])
+            name_list = "\n".join([line[-1] for line in lines.name_get()])
             raise ValidationError(
                 _(
                     "The lines you you are trying to delete are currently"
@@ -159,7 +159,7 @@ class AssetDepreciationLine(models.Model):
             )
         if any([m.state != "draft" for m in self.mapped("move_id")]):
             lines = self.filtered(lambda l: l.move_id and l.move_id.state != "draft")
-            name_list = "\n".join([l[-1] for l in lines.name_get()])
+            name_list = "\n".join([line[-1] for line in lines.name_get()])
             raise ValidationError(
                 _(
                     "Following lines are linked to posted account moves, and"
