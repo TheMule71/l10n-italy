@@ -72,7 +72,6 @@ class AssetAccountingInfo(models.Model):
         info.check_and_normalize()
         return info
 
-    @api.multi
     def write(self, vals):
         fnames = self.get_main_fields()
 
@@ -96,7 +95,6 @@ class AssetAccountingInfo(models.Model):
 
         return res
 
-    @api.multi
     def name_get(self):
         return [(aa_info.id, aa_info.make_name()) for aa_info in self]
 
@@ -117,7 +115,6 @@ class AssetAccountingInfo(models.Model):
             "move_line_id",
         ]
 
-    @api.multi
     def button_unlink(self):
         """Button action: deletes a.a.info"""
         self.unlink()

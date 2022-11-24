@@ -35,7 +35,6 @@ class AssetDepreciationMode(models.Model):
         string="Used Asset Coeff.",
     )
 
-    @api.multi
     def copy(self, default=None):
         default = dict(default or [])
         default.update(
@@ -49,7 +48,6 @@ class AssetDepreciationMode(models.Model):
         )
         return super().copy(default)
 
-    @api.multi
     def unlink(self):
         if (
             self.env["asset.category.depreciation.type"]

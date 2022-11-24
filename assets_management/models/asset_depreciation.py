@@ -148,7 +148,6 @@ class AssetDepreciation(models.Model):
                 num_lines.normalize_depreciation_nr()
         return dep
 
-    @api.multi
     def write(self, vals):
         res = super().write(vals)
         need_norm = self.filtered(lambda d: d.need_normalize_first_dep_nr())
@@ -160,7 +159,6 @@ class AssetDepreciation(models.Model):
                 num_lines.normalize_depreciation_nr(force=True)
         return res
 
-    @api.multi
     def unlink(self):
         if self.mapped("line_ids"):
             raise ValidationError(
@@ -182,11 +180,9 @@ class AssetDepreciation(models.Model):
             )
         return super().unlink()
 
-    @api.multi
     def name_get(self):
         return [(dep.id, dep.make_name()) for dep in self]
 
-    @api.multi
     @api.depends("amount_depreciable", "amount_depreciable_updated", "amount_residual")
     def _compute_state(self):
         for dep in self:
@@ -226,7 +222,6 @@ class AssetDepreciation(models.Model):
         if not self.force_all_dep_nr and self.force_first_dep_nr:
             self.first_dep_nr = 1
 
-    @api.multi
     @api.depends(
         "amount_depreciable",
         "line_ids.amount",
@@ -236,10 +231,17 @@ class AssetDepreciation(models.Model):
     )
     def _compute_amounts(self):
         for dep in self:
+            dep.amount_depreciable_updated = False
+            dep.amount_depreciated = False
+            dep.amount_gain = False
+            dep.amount_historical = False
+            dep.amount_in = False
+            dep.amount_loss = False
+            dep.amount_out = False
+            dep.amount_residual = False
             vals = dep.get_computed_amounts()
             dep.update(vals)
 
-    @api.multi
     @api.depends("line_ids", "line_ids.date", "line_ids.move_type")
     def _compute_last_depreciation_date(self):
         """

@@ -87,7 +87,6 @@ class Report(models.TransientModel):
     #                          #
     ############################
 
-    @api.multi
     def print_report(self, report_type=None):
         """
         This method is called from the JS widget buttons 'Print'
@@ -120,7 +119,6 @@ class Report(models.TransientModel):
         report = self.env.ref(xml_id)
         return report.report_action(self)
 
-    @api.multi
     def view_report(self):
         """Launches view for HTML report"""
         self.ensure_one()
