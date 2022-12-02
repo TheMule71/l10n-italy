@@ -257,7 +257,6 @@
         src_model="account.move"
         res_model="wizard.account.move.manage.asset"
         view_mode="form"
-        view_type="form"
         multi="True"
         key2="client_action_multi"
         target="new"

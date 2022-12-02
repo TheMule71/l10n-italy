@@ -13,7 +13,7 @@ class WizardAccountMoveManageAsset(models.TransientModel):
 
     @api.model
     def get_default_company_id(self):
-        return self.env.user.company_id
+        return self.env.company
 
     @api.model
     def get_default_move_ids(self):
@@ -178,7 +178,6 @@ class WizardAccountMoveManageAsset(models.TransientModel):
                     "res_id": asset.id,
                     "view_id": form.id,
                     "view_mode": "form",
-                    "view_type": "form",
                     "views": [(form.id, "form")],
                 }
             )

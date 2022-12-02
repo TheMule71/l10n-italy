@@ -30,7 +30,6 @@
         "report/reports.xml",
         "views/action_client.xml",
         "views/asset_menuitems.xml",
-        "views/account_invoice.xml",
         "views/account_move.xml",
         "views/asset.xml",
         "views/asset_accounting_info.xml",
