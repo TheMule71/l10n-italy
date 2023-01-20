@@ -9,21 +9,28 @@
         inherit_id="l10n_it_fatturapa_out.account_invoice_it_dati_ddt"
     >
             <xpath expr="t" position="replace">
-                <t t-if="wizard.include_transport_data == 'dati_dn'">
-                    <!--2.1.8-->
-                    <DatiDDT t-foreach="wizard.getDatiDDT(record)" t-as="DatiDDT">
-                        <NumeroDDT
-                        t-esc="encode_for_export(DatiDDT.get('NumeroDDT'), 20)"
-                    />
-                        <DataDDT t-esc="format_date(DatiDDT.get('DataDDT'))" />
-                        <RiferimentoNumeroLinea
-                        t-if="DatiDDT.get('RiferimentoNumeroLinea')"
-                        t-foreach="DatiDDT.get('RiferimentoNumeroLinea')"
-                        t-as="NumeroLinea"
-                        t-esc="NumeroLinea"
-                    />
-                    </DatiDDT>
+                <t t-set="related_dns" t-value="record.related_documents.browse()" />
+                <t
+                t-foreach="record.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"
+                t-as="line"
+            >
+                    <t
+                    t-foreach="line.related_documents.filtered(lambda doc: doc.type == 'dn_data')"
+                    t-as="doc"
+                >
+                        <t t-set="related_dns" t-value="related_dns + doc" />
+                    </t>
                 </t>
+                <t
+                t-set="related_dns"
+                t-value="related_dns + record.related_documents.filtered(lambda doc: doc.type == 'dn_data')"
+            />
+                <!--2.1.8-->
+                <DatiDDT t-foreach="related_dns" t-as="doc">
+                    <NumeroDDT t-if="doc.name" t-esc="doc.name" />
+                    <DataDDT t-if="doc.date" t-esc="doc.date" />
+                    <RiferimentoNumeroLinea t-if="doc.lineRef" t-esc="doc.lineRef" />
+                </DatiDDT>
             </xpath>
         </template>
 </odoo>
