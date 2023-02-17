@@ -38,8 +38,6 @@ class TestInvoiceWT(FatturaPACommon):
         self.env["uom.uom"].search([("name", "=", "Units")]).name = "Unit(s)"
         ###
 
-        type_payable = self.env.ref("account.data_account_type_payable")
-        type_receivable = self.env.ref("account.data_account_type_receivable")
         self.tax_0 = (
             self.env.ref("l10n_it_fatturapa.tax_00_enas")
             .sudo()
@@ -48,16 +46,16 @@ class TestInvoiceWT(FatturaPACommon):
         self.wt_account_payable = self.env["account.account"].create(
             {
                 "name": "Debiti per ritenute da versare",
-                "code": "WT_001",
-                "user_type_id": type_payable.id,
+                "code": "WT.001",
+                "account_type": "liability_payable",
                 "reconcile": True,
             }
         )
         self.wt_account_receivable = self.env["account.account"].create(
             {
                 "name": "Crediti per ritenute subite",
-                "code": "WT_002",
-                "user_type_id": type_receivable.id,
+                "code": "WT.002",
+                "account_type": "asset_receivable",
                 "reconcile": True,
             }
         )
