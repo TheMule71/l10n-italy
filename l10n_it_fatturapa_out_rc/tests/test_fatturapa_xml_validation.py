@@ -60,7 +60,7 @@ class TestFatturaPAXMLValidation(ReverseChargeCommon, FatturaPACommon):
     @classmethod
     def _create_invoice(cls, move_type, partner, name, invoice_date, ref, taxes):
         invoice_form = Form(
-            cls.env["account.move"].with_context({"default_move_type": move_type})
+            cls.env["account.move"].with_context(**{"default_move_type": move_type})
         )
         invoice_form.partner_id = partner
         invoice_form.name = name
