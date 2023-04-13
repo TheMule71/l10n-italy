@@ -802,8 +802,8 @@ class WizardImportFatturapa(models.TransientModel):
                 line_vals["product_id"] = global_discount_product.id
                 line_vals["name"] = global_discount_product.name
                 self.adjust_accounting_data(global_discount_product, line_vals)
-            elif company.arrotondamenti_tax_id:
-                line_vals["tax_ids"] = [(6, 0, [company.arrotondamenti_tax_id.id])]
+            else:
+                line_vals["tax_ids"] = [fields.Command.clear()]
             self.env["account.move.line"].with_context(
                 check_move_validity=False
             ).create(line_vals)
