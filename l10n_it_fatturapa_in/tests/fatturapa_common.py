@@ -6,6 +6,7 @@ from odoo.tests import Form
 from odoo.tests.common import SingleTransactionCase
 
 from odoo.addons.account.tests.common import AccountTestInvoicingCommon
+from odoo.addons.mail.tests.common import mail_new_test_user
 
 
 class FatturapaCommon(SingleTransactionCase):
@@ -309,8 +310,23 @@ class FatturapaCommon(SingleTransactionCase):
         )
 
     @classmethod
+    def _set_it_user(cls):
+        """Create and set an Italian Account Manager as current user."""
+        groups = cls.env.user.groups_id | cls.env.ref("account.group_account_manager")
+        groups_xml_id_dict = groups.get_external_id()
+        user = mail_new_test_user(
+            cls.env,
+            login="it_account_manager",
+            groups=",".join(groups_xml_id_dict.values()),
+        )
+
+        cls.env = cls.env(user=user)
+
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
+
+        cls._set_it_user()
 
         # create IT company
         # (borrowing setup_company_data from AccountTestInvoicingCommon)

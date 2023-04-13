@@ -16,6 +16,7 @@
     "license": "AGPL-3",
     "depends": [
         "base_vat",
+        "mail",
         "l10n_it_fatturapa",
         "l10n_it_fiscal_document_type",
         "l10n_it_withholding_tax_reason",

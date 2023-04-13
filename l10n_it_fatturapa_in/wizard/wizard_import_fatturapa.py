@@ -459,7 +459,6 @@ class WizardImportFatturapa(models.TransientModel):
                     ("type_tax_use", "=", "purchase"),
                     ("kind_id.code", "=", Natura),
                     ("amount", "=", 0.0),
-                    ("company_id", "=", company_id),
                 ],
                 order="sequence",
             )
@@ -488,7 +487,6 @@ class WizardImportFatturapa(models.TransientModel):
         else:
             account_taxes = account_tax_model.search(
                 [
-                    ("company_id", "=", company_id),
                     ("type_tax_use", "=", "purchase"),
                     ("amount", "=", float(AliquotaIVA)),
                     ("price_include", "=", False),
