@@ -23,7 +23,7 @@
     ],
     "assets": {
         "web.assets_backend": [
-            "l10n_it_withholding_tax/static/src/components/*/*",
+            "l10n_it_withholding_tax/static/src/components/**/*",
         ],
     },
     "installable": True,
