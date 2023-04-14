@@ -55,9 +55,10 @@ class TestWithholdingTaxPayment(AccountTestInvoicingCommon):
         but only the default company for the user.
         """
         context = {"allowed_company_ids": company.ids}
+        ctx = dict(cls.env.context)
         if "allowed_company_ids" in cls.env.context:
-            cls.env.context.pop("allowed_company_ids")
-        cls.env.context = dict(**cls.env.context, **context)
+            ctx.pop("allowed_company_ids", None)
+        cls.env.context = dict(**ctx, **context)
 
     @classmethod
     def setUpClass(cls, chart_template_ref=None):
