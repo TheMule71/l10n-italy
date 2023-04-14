@@ -29,14 +29,12 @@ class WizardWtMovePaymentCreate(models.TransientModel):
             "l10n_it_withholding_tax_payment.view_withholding_move_payment_form"
         )
         view_id = view[1] or False
-        if hasattr(wt_payment, "id"):
-            return {
-                "name": _("Withholding Tax Payment"),
-                "view_type": "form",
-                "view_mode": "form",
-                "res_model": "withholding.tax.move.payment",
-                "res_id": wt_payment.id,
-                "type": "ir.actions.act_window",
-                "view_id": [view_id],
-            }
-        return False
+        return {
+            "name": _("Withholding Tax Payment"),
+            "view_type": "form",
+            "view_mode": "form",
+            "res_model": "withholding.tax.move.payment",
+            "res_id": wt_payment.id,
+            "type": "ir.actions.act_window",
+            "view_id": [view_id],
+        }
