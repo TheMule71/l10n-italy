@@ -580,10 +580,10 @@ e 'line' per riga di fattura (a seconda del livello in cui sono chiamati)
                               <!--                <SpeseAccessorie t-out=""/>-->
                               <!--                <Arrotondamento t-out=""/>-->
                               <ImponibileImporto
-                            t-out="format_monetary(fpa_to_eur(tax_data['ImponibileImporto'], invoice=record), euro)"
+                            t-out="format_monetary(tax_data['ImponibileImporto'], euro)"
                         />
                               <Imposta
-                            t-out="format_monetary(fpa_to_eur(tax_data['Imposta'], invoice=record), euro)"
+                            t-out="format_monetary(tax_data['Imposta'], euro)"
                         />
                                 <EsigibilitaIVA
                             t-if="tax_data.get('EsigibilitaIVA', False)"
