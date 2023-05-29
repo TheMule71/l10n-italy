@@ -40,9 +40,13 @@ class WizardExportFatturapa(models.TransientModel):
             ("binding_model_id", "=", model_name),
         ]
 
-    report_print_menu = fields.Many2one(
-        comodel_name="ir.actions.report",
-        domain=_domain_ir_values,
+    def _get_selection(self):
+        reports = self.env["ir.actions.actions"].sudo().search(self._domain_ir_values())
+        ret = [(str(r.id), r.name) for r in reports]
+        return ret
+
+    report_print_menu = fields.Selection(
+        selection="_get_selection",
         help="This report will be automatically included in the created XML",
     )
 
@@ -283,10 +287,13 @@ class WizardExportFatturapa(models.TransientModel):
         return action
 
     def generate_attach_report(self, inv):
-        report_model = self.report_print_menu
-        attachment, attachment_type = report_model._render_qweb_pdf(
-            report_model, inv.ids
-        )
+        try:
+            report_id = int(self.report_print_menu)
+        except ValueError as exc:
+            raise UserError(_("Print report not found")) from exc
+
+        report_model = self.env["ir.actions.report"].sudo().browse(report_id)
+        attachment, attachment_type = report_model._render_qweb_pdf(inv.ids)
         att_id = self.env["ir.attachment"].create(
             {
                 "name": "{}.pdf".format(inv.name),
