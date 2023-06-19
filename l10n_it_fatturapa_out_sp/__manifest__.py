@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 {
     "name": "ITA - Fattura elettronica - Emissione - Scissione Pagamenti",
-    "version": "14.0.1.0.4",
+    "version": "16.0.1.0.0",
     "development_status": "Beta",
     "category": "Localization/Italy",
     "summary": "Scissione pagamenti in fatturapa",
@@ -12,6 +12,7 @@
     "depends": [
         "l10n_it_fatturapa_out",
         "l10n_it_split_payment",
+        "account_check_printing",
     ],
     "installable": True,
     "auto_install": True,
