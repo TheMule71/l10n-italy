@@ -1,2 +1,0 @@
-odoo-addon-l10n_it_sdi_channel @ git+https://github.com/OCA/l10n-italy.git@refs/pull/3189/head#subdirectory=setup/l10n_it_sdi_channel
-odoo-addon-l10n_it_fatturapa_in @ git+https://github.com/OCA/l10n-italy.git@refs/pull/3000/head#subdirectory=setup/l10n_it_fatturapa_in
